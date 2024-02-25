@@ -41,6 +41,7 @@ function App() {
           alert('Proceed to Home Page');
           setIsVerified(true);
       } else {
+        alert('More than one faces detected');
         setIsVerified(false);
       }
     } else {

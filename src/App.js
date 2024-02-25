@@ -1,24 +1,89 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import "./App.css";
+import DetectFace from "./DetectFace";
+import Home from "./Home";
+import { useEffect } from "react";
+import { useFaceDetection } from "react-use-face-detection";
+import FaceDetection from "@mediapipe/face_detection";
+import { Camera } from "@mediapipe/camera_utils";
+const width = 500;
+const height = 500;
 
 function App() {
+  const [isVerified, setIsVerified] = useState(false);
+  const [status, setStatus] = useState("");
+
+  const { webcamRef, boundingBox, isLoading, detected, facesDetected } =
+    useFaceDetection({
+      faceDetectionOptions: {
+        model: "short",
+      },
+      faceDetection: new FaceDetection.FaceDetection({
+        locateFile: (file) =>
+          `https://cdn.jsdelivr.net/npm/@mediapipe/face_detection/${file}`,
+      }),
+      camera: ({ mediaSrc, onFrame }) =>
+        new Camera(mediaSrc, {
+          onFrame,
+          width,
+          height,
+        }),
+    });
+
+  useEffect(() => {
+    if (detected) {
+      if (facesDetected > 1) {
+        alert("More than one faces detected");
+        setIsVerified(false);
+        }else{
+        setIsVerified(true);
+      }
+    } else {
+      if (!isLoading) {
+        alert("No faces detected! Please ensure your face is visible.");
+      }
+      setIsVerified(false);
+    }
+  }, [facesDetected]);
+
+  useEffect(() => {
+    if (boundingBox.length > 0) {
+      if (
+        0.12 < boundingBox[0].xCenter &&
+        boundingBox[0].xCenter < 0.4 &&
+        0.12 < boundingBox[0].yCenter &&
+        boundingBox[0].yCenter < 0.5
+      ) {
+        setStatus("Sitting Correctly");
+      } else {
+        setStatus("Please align yourself to the center of camera");
+      }
+    }
+  }, [boundingBox]);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            isVerified ? (
+              <Home status={status} />
+            ) : (
+              <DetectFace
+                isLoading={isLoading}
+                detected={detected}
+                facesDetected={facesDetected}
+                webcamRef={webcamRef}
+                boundingBox={boundingBox}
+              />
+            )
+          }
+        />
+        {/* <Route path="/home" element={isVerified && <Home status={status} />} /> */}
+      </Routes>
+    </Router>
   );
 }
 

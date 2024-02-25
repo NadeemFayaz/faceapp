@@ -32,11 +32,14 @@ function App() {
     });
 
   useEffect(() => {
+    console.log(isLoading);
+  }, [isLoading]);
+  useEffect(() => {
     if (detected) {
       if (facesDetected > 1) {
         alert("More than one faces detected");
         setIsVerified(false);
-        }else{
+      } else {
         setIsVerified(true);
       }
     } else {
@@ -81,7 +84,7 @@ function App() {
             )
           }
         />
-        {/* <Route path="/home" element={isVerified && <Home status={status} />} /> */}
+        <Route path="/home" element={isVerified && <Home status={status} />} />
       </Routes>
     </Router>
   );

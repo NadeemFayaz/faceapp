@@ -13,6 +13,7 @@ const height = 500;
 function App() {
   const [isVerified, setIsVerified] = useState(false);
   const [status, setStatus] = useState("");
+  const [timer, setTimer] = useState(3);
 
   const { webcamRef, boundingBox, isLoading, detected, facesDetected } =
     useFaceDetection({
@@ -36,11 +37,11 @@ function App() {
   }, [isLoading]);
   useEffect(() => {
     if (detected) {
-      if (facesDetected > 1) {
+      if (facesDetected == 1) {
+          setIsVerified(true);
+      } else {
         alert("More than one faces detected");
         setIsVerified(false);
-      } else {
-        setIsVerified(true);
       }
     } else {
       if (!isLoading) {
@@ -48,7 +49,7 @@ function App() {
       }
       setIsVerified(false);
     }
-  }, [facesDetected]);
+  }, [detected, facesDetected]);
 
   useEffect(() => {
     if (boundingBox.length > 0) {
@@ -84,7 +85,6 @@ function App() {
             )
           }
         />
-        <Route path="/home" element={isVerified && <Home status={status} />} />
       </Routes>
     </Router>
   );

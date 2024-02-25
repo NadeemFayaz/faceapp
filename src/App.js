@@ -38,6 +38,7 @@ function App() {
   useEffect(() => {
     if (detected) {
       if (facesDetected == 1) {
+          alert('Proceed to Home Page');
           setIsVerified(true);
       } else {
         alert("More than one faces detected");

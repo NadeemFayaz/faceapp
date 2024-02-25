@@ -1,6 +1,5 @@
 import Webcam from "react-webcam";
 import { useEffect, useState } from "react";
-import { DNA } from "react-loader-spinner";
 import "./DetectFace.css";
 const width = 500;
 const height = 500;
@@ -31,9 +30,7 @@ const DetectFace = ({
     <div className="main-container">
       {!hasPermission ? (
         <div style={{ color: "indigo" }}> Please Allow Camera Permissions</div>
-      ) : false ? (
-        <DNA />
-      ) : (
+      ) :  (
         <>
           <h2>Nadeem Fayaz: Face Detection {isLoading}</h2>
           <div style={{ width, height, position: "relative" }}>

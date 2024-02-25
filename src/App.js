@@ -13,7 +13,7 @@ const height = 500;
 function App() {
   const [isVerified, setIsVerified] = useState(false);
   const [status, setStatus] = useState("");
-  const [timer, setTimer] = useState(3);
+
 
   const { webcamRef, boundingBox, isLoading, detected, facesDetected } =
     useFaceDetection({
@@ -32,9 +32,6 @@ function App() {
         }),
     });
 
-  useEffect(() => {
-    console.log(isLoading);
-  }, [isLoading]);
   useEffect(() => {
     if (facesDetected > 0) {
       if (facesDetected == 1) {
